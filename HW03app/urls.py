@@ -16,10 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from .views import order_month, order_week, order_year
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('HW01/', include('HW01app.urls')),
-    path('HW02/', include('HW02app.urls')),
-    path('HW03/', include('HW03app.urls')),
+    path('order_week/', order_week, name='order_week'),
+    path('order_month/', order_month, name='order_month'),
+    path('order_year/', order_year, name='order_year'),
 ]
