@@ -1,6 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 from.models import Client, Order, Product
+from .forms import ProductForm
+from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 
@@ -35,3 +37,20 @@ def create_order(request):
         order = Order(total_price=f'{i}00', customer_id='1')
         order.save()
     return HttpResponse('Create 10 orders!')
+
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES) # request.POST чтобы получить текстовую информацию , request.FILES чтобы получить байты
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            about = form.cleaned_data['about']
+            price = form.cleaned_data['price']
+            count = form.cleaned_data['count']
+            image = form.cleaned_data['image']
+            fs = FileSystemStorage()  # FileSystemStorage экземпляр позволяет работать с файлами
+            # fs.save(image.name, image)
+            product = Product(name=name, about=about, price=price, count=count, image=fs.save(image.name, image))
+            product.save()
+    else:
+        form = ProductForm()
+    return render(request, 'template/formproduct.html', {'form': form})
